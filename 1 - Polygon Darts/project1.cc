@@ -1,7 +1,7 @@
 #include "point.h"
 
-bool Intersect(Point p1, Point p2, Point q1, Point q2, Point &x);
-bool InsidePolygon(Point p, Point c, int32_t qSize, Point q[], Point &x);
+bool InsidePolygon(Point p, Point c, int32_t qSize, Point q[], Point &x); // func prototype
+Fraction AreaOfPolygon(int32_t pSize, Point p[]);
 
 int main() {
 
@@ -15,14 +15,7 @@ int main() {
         k, // 3 <= k <= 20 vertices
         m; // m <= 10 number of darts thrown
 
-    // // test1
-    // // (10/1,10/1)
-    // // 2
-    // // 3 (0/1,0/1) (3/1,0/1) (2/1,1/1)
-    // // 4 (5/1,1/1) (8/1,4/1) (5/1,7/1) (2/1,4/1)
-    // // 1
-    // // (4/1,9/2)
-
+    Fraction score; // game score starts at ( 0 / 1 )
 
     std::cin >> b;
     std::cin >> n;
@@ -36,13 +29,10 @@ int main() {
         Point* vertices = new Point[k]; // array of vertices for each polygon
         polygonSize[i] = k;
 
-        Fraction sum(0,1); // sum of k vertices
-
         Point pointK; // pointK of input
 
         for (int32_t j=0; j < k; j++) {
             std::cin >> vertices[j];
-            std::cout << vertices[j] << std::endl;
         }
 
         polygon[i] = vertices; // fill polygon with vertices
@@ -55,7 +45,6 @@ int main() {
 
     for (int32_t i=0; i < m; i++) {
         std::cin >> dart[i];
-        std::cout << i << "dart: " << dart[i] << std::endl;
     }
 
     Point p1(1,1), p2(2,2), q1(1,2), q2(2,1);
@@ -64,10 +53,16 @@ int main() {
 
     for (int32_t i=0; i < m; i++) {
         for (int32_t j=0; j < n; j++) {
-            std::cout << "poly size: " << polygonSize[j] << std::endl;
-            std::cout << InsidePolygon(dart[i], b, polygonSize[j], polygon[j], x) << std::endl;
+    
+            // check if dart hits a polygon
+            if (InsidePolygon(dart[i], b, polygonSize[j], polygon[j], x)) {
+                Fraction boardArea = b.getX() * b.getY();
+                score = score + (boardArea / AreaOfPolygon(polygonSize[j], polygon[j])); // area of board divided by area of polygon containing the dart
+            }
         }  
     }
+
+    std::cout << "Final Score: " << score << std::endl; // final score output
 
     return 0;
 }
@@ -119,7 +114,6 @@ bool InsidePolygon(Point p, Point c, int32_t qSize, Point q[], Point &x) {
         } else {
             qk1 = q[i+1];
         }
-        std::cout << qk << " " << qk1 << std::endl;
 
         if (Intersect(v1, v2, qk, qk1, x)) {
             z1 = x - p;
@@ -148,4 +142,23 @@ bool InsidePolygon(Point p, Point c, int32_t qSize, Point q[], Point &x) {
     } else {
         return true;
     }
+}
+
+Fraction AreaOfPolygon(int32_t pSize, Point p[]) {
+    Fraction area; // area of polygon
+
+    for (int32_t i=0; i<pSize; i++) {
+        Point 
+            pk = p[i], // vertex i
+            pk1; // vertex i + 1
+
+        // wrap vertices
+        if (i+1 >= pSize) {
+            pk1 = p[0];
+        } else {
+            pk1 = p[i+1];
+        }
+        area = area + (pk * pk1);
+    }
+    return area / 2;
 }
