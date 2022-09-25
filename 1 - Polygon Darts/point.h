@@ -1,3 +1,4 @@
+#include <iostream>
 #include "fraction.h"
 
 #ifndef _POINT_H
@@ -9,8 +10,11 @@ class Point {
         Fraction x, y;
 
     public:
-        Point(Fraction x=0, Fraction y=0);
+        Point(Fraction _x=0, Fraction _y=0);
         ~Point(void);
+
+        // assignment
+        Point &operator=(Point rhs);
 
         // add and subtract
         Point operator+(Point rhs);
@@ -30,5 +34,7 @@ class Point {
         Fraction getY() { return y; }
 };
 
+std::istream &operator>>(std::istream &is, Point &p);
+std::ostream &operator<<(std::ostream &os, Point p);
 
 #endif
