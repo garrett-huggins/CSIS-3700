@@ -1,12 +1,19 @@
 #include "point.h"
 #include "fraction.h"
 
-Point::Point(Fraction a, Fraction b) {
-    x = a;
-    y = b;
+Point::Point(Fraction _x, Fraction _y) {
+    x = _x;
+    y = _y;
 }
 
 Point::~Point(void) {}
+
+Point &Point::operator=(Point rhs) {
+	x = rhs.x;
+	y = rhs.y;
+
+	return *this;
+}
 
 Point Point::operator+(Point rhs) {
     Fraction s,t;
@@ -22,6 +29,7 @@ Point Point::operator-(Point rhs) {
 
     s = x - rhs.x;
     t = y - rhs.y;
+
 
     return Point(s,t);
 }
@@ -49,4 +57,25 @@ bool Point::operator==(Point rhs) {
 
 bool Point::operator!=(Point rhs) {
     return x != rhs.x && y != rhs.y;
+}
+
+// istream and ostream mainly for testing purposes
+
+std::istream &operator>>(std::istream &is, Point &p) {
+
+	Fraction x,y;
+	
+	char comma, bracketLeft, bracketRight;
+
+	is >> bracketLeft >> x >> comma >> y >> bracketRight;
+	
+	p = Point(x,y);
+	
+	return is;
+}
+std::ostream &operator<<(std::ostream &os, Point p) {
+
+	os << "(" << p.getX() << " , " << p.getY() << ")";
+
+	return os;
 }
