@@ -1,7 +1,7 @@
 #include "point.h"
 
 bool InsidePolygon(Point p, Point c, int32_t qSize, Point q[], Point &x); // func prototype
-Fraction AreaOfPolygon(int32_t pSize, Point p[]);
+Fraction AreaOfPolygon(int32_t pSize, Point p[]); // func prototype
 
 int main() {
 
@@ -46,8 +46,6 @@ int main() {
     for (int32_t i=0; i < m; i++) {
         std::cin >> dart[i];
     }
-
-    Point p1(1,1), p2(2,2), q1(1,2), q2(2,1);
 
     // DART TIME
 
