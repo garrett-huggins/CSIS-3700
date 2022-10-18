@@ -18,7 +18,7 @@ const uint32_t
 
 class Dictionary {
 public:
-    Dictionary() { clear(); } // NOLINT(cppcoreguidelines-pro-type-member-init)
+    Dictionary() { clear(); }
     ~Dictionary() = default;
 
     bool isEmpty() { return nItems == 0; }
