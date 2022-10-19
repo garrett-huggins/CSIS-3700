@@ -44,6 +44,10 @@ int main() {
                 numStack.push(num);
             }
             else if (isalpha(line[first])) {
+                //std::cout << "WE FOUND A LETTER" << std::endl; TEST
+
+                // FIND OUT IF NAME IS IN DICTIONARY
+
                 num.name = "";
                 while (isalpha(line[first])) {
                     num.name = num.name + line[first]; //create string
@@ -77,23 +81,44 @@ int main() {
                opStack.pop();
                first++; 
             }
-            else if (line[first] == '+' || line[first] == '-' || line[first] == '*' || line[first] == '/') {
+            else if (line[first] == '+' || line[first] == '=' || line[first] == '-' || line[first] == '*' || line[first] == '/') {
+                // if (line[first] == '=') {
+                //         res.name = lhs.name;
+                //         res.val = rhs.val;
+                //         vars.add(lhs.name, rhs.val);
+                //         numStack.push(res);
+                // }
+                std::cout << "MADE IT INSIDE FIRST OP" << std::endl;
+
                 while (hasPrecedence(opStack.peek(), line[first])) {
                     
-                //    //perform top operation
-                //     op = opStack.pop();     //operation
-                //     rhs = numStack.pop();   //right hand operand
-                //     lhs = numStack.pop();   //left hand operand
-                
-                //     if (op == '=') {
-                //         vars.add(lhs.name, rhs.val);
-                //     } else {
-                //         Fraction numValue = doOperation(lhs, op, rhs);
-                //         Value res;
-                //         res.name = "";
-                //         res.val = numValue;
-                //         numStack.push(res);
-                //     }
+                    std::cout << "MADE IT INSIDE OP" << std::endl;
+                   //perform top operation
+                    op = opStack.pop();     //operation
+                    rhs = numStack.pop();   //right hand operand
+                    lhs = numStack.pop();   //left hand operand
+                    Value res;
+
+                    if (op == '=') {
+                        res.name = lhs.name;
+                        res.val = rhs.val;
+                        std::cout << "var name: " << lhs.name << std::endl;
+                        std::cout << "value: " << rhs.val << std::endl;
+                        vars.add(lhs.name, rhs.val);
+                        numStack.push(res);
+                    } else {
+                        if (rhs.name != "") {
+                        rhs.val = vars.search(rhs.name);
+                        }
+                        if (lhs.name != "") {
+                            lhs.val = vars.search(lhs.name);
+                        }
+                        Fraction numValue = doOperation(lhs, op, rhs);
+                        res.name = "";
+                        res.val = numValue;
+                        numStack.push(res);
+                    }
+                    
                 }
                 opStack.push(line[first]);
                 first++; 
@@ -104,15 +129,45 @@ int main() {
             else {
                 first++;
             }
-            std::cout << line[first] << std::endl;
+            //std::cout << line[first] << std::endl;
         }
-
+        
         while (opStack.peek() != '$') {
             //perform top operation
+            op = opStack.pop();     //operation
+            rhs = numStack.pop();   //right hand operand
+            lhs = numStack.pop();   //left hand operand
+            Value res;
+
+            std::cout << "MADE IT $ OP" << std::endl;
+
+            if (op == '=') {
+                res.name = lhs.name;
+                res.val = rhs.val;
+                std::cout << "var name: " << lhs.name << std::endl;
+                std::cout << "value: " << rhs.val << std::endl;
+                vars.add(lhs.name, rhs.val);
+                numStack.push(res);
+            } else {
+                if (rhs.name != "") {
+                rhs.val = vars.search(rhs.name);
+                }
+                if (lhs.name != "") {
+                    lhs.val = vars.search(lhs.name);
+                }
+                Fraction numValue = doOperation(lhs, op, rhs);
+                res.name = "";
+                res.val = numValue;
+                numStack.push(res);
+            }
         }
 
         //return numStack.peek();
+        //std::cout << numStack.peek().name << std::endl;
         std::cout << numStack.peek().val << std::endl;
+        //vars.add("vars", 25);
+
+        //std::cout << vars.search("vars") << std::endl;
     }
     
     
@@ -120,7 +175,7 @@ int main() {
 }
 
 bool hasPrecedence(char a, char b) {
-	if (a == '+' || a == '/') {
+	if (a == '*' || a == '/') {
 		return true;
 	}
 	if (a == '(' || a == '=' || a == '$') {
