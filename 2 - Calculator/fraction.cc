@@ -1,23 +1,20 @@
 #include "fraction.h"
 
-int gcd(int u, int v)
-{
-    u = (u < 0) ? -u : u;
-    v = (v < 0) ? -v : v;
+int32_t gcd(int32_t a,int32_t b) {
+  int32_t
+    r;
 
-    while (u > 0)
-    {
-        if (u < v)
-        {
-            int t = u;
-            u = v;
-            v = t;
-        }
+  // make sure a and b are not negative
+  a = (a < 0) ? -a : a;
+  b = (b < 0) ? -b : b;
 
-        u -= v;
-    }
+  while (b != 0) {
+    r = a % b;
+    a = b;
+    b = r;
+  }
 
-    return v;
+  return a;
 }
 
 Fraction::Fraction(int32_t n, int32_t d) {
