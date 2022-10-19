@@ -67,7 +67,7 @@ int main() {
 
                     // check dictionary
                     if (rhs.name != "") {
-                    rhs.val = vars.search(rhs.name);
+                        rhs.val = vars.search(rhs.name);
                     }
                     if (lhs.name != "") {
                         lhs.val = vars.search(lhs.name);
