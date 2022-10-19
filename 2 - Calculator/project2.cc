@@ -83,11 +83,9 @@ int main() {
                first++; 
             }
             else if (line[first] == '+' || line[first] == '=' || line[first] == '-' || line[first] == '*' || line[first] == '/') {
-                std::cout << "MADE IT INSIDE FIRST OP" << std::endl;
 
                 while (hasPrecedence(opStack.peek(), line[first])) {
                     
-                    std::cout << "MADE IT INSIDE OP" << std::endl;
                     //perform top operation
                     op = opStack.pop();     //operation
                     rhs = numStack.pop();   //right hand operand
@@ -126,8 +124,6 @@ int main() {
             lhs = numStack.pop();   //left hand operand
             Value res;              //result value
 
-            std::cout << "MADE IT $ OP" << std::endl;
-
             if (op == '=') {
                 // check if assigning a variable
                 if (rhs.name != "") {
@@ -154,13 +150,7 @@ int main() {
                 numStack.push(res);
             }
         }
-
-        //return numStack.peek();
-        //std::cout << numStack.peek().name << std::endl;
         std::cout << numStack.peek().val << std::endl;
-        //vars.add("vars", 25);
-
-        //std::cout << vars.search("vars") << std::endl;
     }
     return 0;
 }
@@ -188,6 +178,10 @@ Fraction doOperation(Value lhs, char op, Value rhs) {
             res = lhs.val * rhs.val;
             break;
         case '/':
+            // cant devide by zero
+            if (rhs.val == 0) {
+                 throw std::invalid_argument( "Can't devide by zero" );
+            }
             res = lhs.val / rhs.val;
             break;
     }
