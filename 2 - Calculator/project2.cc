@@ -3,7 +3,8 @@
 #include "dictionary.h"
 #include "stack.h"
 
-// global value struct
+// global Value struct
+// *Value struct needed for doOperation*
 struct Value {
     std::string name;
     Fraction val;
@@ -13,6 +14,7 @@ Fraction doOperation(Value lhs, char op, Value rhs); //func prototype
 bool hasPrecedence(char a, char b); //func prototype
 
 int main() {
+    // variable assignment dictionary
     Dictionary vars;
 
     // global stacks
@@ -28,11 +30,12 @@ int main() {
         numStack.clear();
         opStack.clear();
         opStack.push('$');
-        int32_t first = 0;
-        char op;
-        Value num;
-        Value rhs;
-        Value lhs;
+        
+        int32_t first = 0;  // line index
+        char op;            // stack operation
+        Value num;          // stack value
+        Value rhs;          // right hand side value
+        Value lhs;          // left hand side value
 
         while (first < line.length()) {
             if (isdigit(line[first])) {
@@ -150,7 +153,7 @@ int main() {
                 numStack.push(res);
             }
         }
-        std::cout << numStack.peek().val << std::endl;
+        std::cout << numStack.peek().val << std::endl; // answer output
     }
     return 0;
 }
@@ -178,9 +181,9 @@ Fraction doOperation(Value lhs, char op, Value rhs) {
             res = lhs.val * rhs.val;
             break;
         case '/':
-            // cant devide by zero
+            // cant divide by zero
             if (rhs.val == 0) {
-                 throw std::invalid_argument( "Can't devide by zero" );
+                 throw std::invalid_argument( "Can't divide by zero" );
             }
             res = lhs.val / rhs.val;
             break;
