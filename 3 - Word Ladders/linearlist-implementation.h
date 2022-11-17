@@ -5,7 +5,7 @@
 #ifndef LINEARLIST_LINEARLIST_IMPLEMENTATION_H
 #define LINEARLIST_LINEARLIST_IMPLEMENTATION_H
 
-#include <linearlist.h>
+#include "linearlist.h"
 #include <stdexcept>
 
 //=============================================================================
