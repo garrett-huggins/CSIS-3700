@@ -3,60 +3,81 @@
 #include "linearlist.h"
 #include "queue.h"
 
-Queue<int> queue;
-      
+// word struct    
 struct WordNode {
-  string word;
+  std::string word;
   int ptr;
-  LinearList<int> linkedWords;
+  LinearList<int> adjacentWords;
 };
 
+// word queue handler
+Queue<int> queue;
+
+// list of words from file
 WordNode wordList[5757];
 
-int search(string);
-int hammingDistance(string, string);
-void genAdjacency();
+// function prototypes
+int search(std::string);
+int hammingDistance(std::string, std::string);
 void genLadder(int, int);
 
 int main() {
-    std::fstream wordsFile; 
+  // sgb-words.txt file
+  std::fstream wordsFile; 
 
-    wordsFile.open("sgb-words.txt", ios::in);
+  wordsFile.open("sgb-words.txt", ios::in);
 
-    if (wordsFile.is_open()) {
-      string line;
-      int i = 0;
-      while ( getline (wordsFile,line) ) {
-        wordList[i].word = line;
-        wordList[i].ptr = -1;
+  if (wordsFile.is_open()) {
+    std::string line;
+    int i = 0;
 
-        i++;
+    // insert each word node into word list
+    // initialize ptr to words to -1 (NULL)
+    while ( getline (wordsFile,line) ) {
+      wordList[i].word = line;
+      wordList[i].ptr = -1; // does not point to any words yet
+
+      i++;
+    }
+    wordsFile.close();
+  }
+
+  // find adjacent words
+  // create a list of words with only 1 letter in difference (hamming distance == 1)
+  for (int i = 0; i < 5757; i++) {
+    for (int j = 0; j < 5757; j++) {
+      if (hammingDistance(wordList[i].word, wordList[j].word) == 1) {
+        wordList[i].adjacentWords.insert(wordList[i].adjacentWords.size(), j);
       }
-      wordsFile.close();
     }
+  }
 
-    genAdjacency();
+  WordNode word1, word2;
 
-    WordNode word1, word2;
-    std::cin >> word1.word >> word2.word;
+  // get input
+  std::cin >> word1.word >> word2.word;
 
-    word1.ptr = search(word1.word);
-    word2.ptr = search(word2.word);
+  word1.ptr = search(word1.word);
+  word2.ptr = search(word2.word);
 
-    if (word1.ptr == -1) {
-      std::cout << "word 1 not found" << std::endl;
-      return 0;
-    }
-    if ( word2.ptr == -1) {
-      std::cout << "word 2 not found" << std::endl;
-    }
-
-    genLadder(word1.ptr, word2.ptr);
-    
+  // check words are in list
+  if (word1.ptr == -1) {
+    std::cout << "first word not found" << std::endl;
     return 0;
+  }
+  if ( word2.ptr == -1) {
+    std::cout << "second word not found" << std::endl;
+    return 0;
+  }
+
+  // generate ladder
+  genLadder(word1.ptr, word2.ptr);
+  
+  return 0;
 }
 
-int search(string w) {
+// sequential search
+int search(std::string w) {
   for (int i = 0; i < 5757; i++) {
     if (wordList[i].word == w) {
       return i;
@@ -65,7 +86,8 @@ int search(string w) {
   return -1;
 }
 
-int hammingDistance(string w1, string w2) {
+// returns the number of different letters between 2 words
+int hammingDistance(std::string w1, std::string w2) {
   int count = 0;
   for (int i = 0; i < 5; i++) {
     if (w1[i] != w2[i]) {
@@ -75,17 +97,10 @@ int hammingDistance(string w1, string w2) {
   return count;
 }
 
-void genAdjacency() {
-  for (int i = 0; i < 5757; i++) {
-    for (int j = 0; j < 5757; j++) {
-      if (hammingDistance(wordList[i].word, wordList[j].word) == 1) {
-        wordList[i].linkedWords.insert(wordList[i].linkedWords.size(), j);
-      }
-    }
-  }
-}
-
 void genLadder(int w1, int w2) {
+  // w1 and w2 are ptr's
+  // must reference wordList at ptr to access word node
+
   int w,v;
 
   queue.enqueue(w2);
@@ -93,8 +108,9 @@ void genLadder(int w1, int w2) {
   while (!queue.isEmpty()) {
     w = queue.dequeue();
 
-    for (int i = 0; i < wordList[w].linkedWords.size(); i++) {
-      v = wordList[w].linkedWords[i];
+    // check each word in ladder list
+    for (int i = 0; i < wordList[w].adjacentWords.size(); i++) {
+      v = wordList[w].adjacentWords[i];
 
       if (wordList[v].ptr == -1 && v != w2) {
         wordList[v].ptr = w;
@@ -105,7 +121,7 @@ void genLadder(int w1, int w2) {
   }
 
   if (wordList[w1].ptr != -1) {
-    std::cout << wordList[w].word << std::endl;
+    std::cout << wordList[w1].word << std::endl;
     w = wordList[w1].ptr;
 
     while (w != -1) {
@@ -113,6 +129,6 @@ void genLadder(int w1, int w2) {
       w = wordList[w].ptr;
     }
   } else {
-    std::cout << "No ladder exists" << std::endl;
+    std::cout << "no ladder exists" << std::endl;
   }
 }
