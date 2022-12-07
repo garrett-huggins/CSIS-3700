@@ -209,6 +209,7 @@ private:
         }
 
         uint32_t tmp = freeListHead;
+        freeListHead = left[freeListHead];
 
         left[tmp] = NULL_INDEX;
         right[tmp] = NULL_INDEX;
@@ -244,14 +245,14 @@ private:
         heights[r] = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
     }
 
-    // recursive inser / update / access
+    // recursive insert / update / access
     uint32_t prvInsert(uint32_t r,uint32_t &n,const KeyType &k) {
         if (r == NULL_INDEX) {
             keys[n] = k;
             return n;
         }
 
-        if (k < keys[r]) {
+        if (k == keys[r]) {
             n = r;
         } else
         if (k < keys[r]) {
@@ -267,7 +268,7 @@ private:
 
     uint32_t prvRemove(uint32_t r,uint32_t &ntbd,const KeyType &k) {
         if (r == NULL_INDEX) {
-            std::__throw_domain_error("Remove: key not found");
+            throw std::domain_error("Remove: key not found");
         }
 
         if (k < keys[r]) {
