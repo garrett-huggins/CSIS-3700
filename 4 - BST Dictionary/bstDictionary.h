@@ -4,9 +4,6 @@
 #include <cstdint> // for uint32_t
 #include <stdexcept> // for domain_error
 
-#define GET_COUNT(n) (((n) == NULL_INDEX) ? 0 : counts[n])
-#define GET_HEIGHT(n) (((n) == NULL_INDEX) ? 0 : heights[n])
-
 static const uint32_t
 NULL_INDEX = 0xffffffff,
 DEFAULT_INITIAL_CAPACITY = 16;
@@ -63,9 +60,9 @@ public:
     void clear() { prvClear(root); root = NULL_INDEX; }
 
 
-    uint32_t size() { return GET_COUNT(root); }
+    uint32_t size() { return getCount(root); }
 
-    uint32_t height() { return GET_HEIGHT(root); }
+    uint32_t height() { return getHeight(root); }
 
     bool isEmpty() { return root == NULL_INDEX; }
 
@@ -98,7 +95,7 @@ public:
     }
 
     void remove(const KeyType &k) {
-
+        
     }
 
 // -- private --
@@ -120,31 +117,21 @@ private:
     static ValueType
         *values; // pool of values
 
-    // uint32_t getHeight(uint32_t node) {
-    //     if (node == NULL_INDEX) {
-    //         return 0;
-    //     } else {
-    //         uint32_t left_side = getHeight(node[left]);
-    //         uint32_t right_side = getHeight(node[right]);
+    uint32_t getHeight(uint32_t node) {
+        if (node == NULL_INDEX) {
+            return 0;
+        } else {
+            return heights[node];
+        }
+    }
 
-    //         if (left_side > right_side) {
-    //             return left_side + 1;
-    //         } else {
-    //             return right_side + 1;
-    //         }
-    //     }
-    // }
-
-    // uint32_t getCount(uint32_t tree) {
-    //     int count = 0;
-    //     if (tree == NULL_INDEX) {
-    //         return 0;
-    //     } else {
-    //         count += getCount(tree[left]);
-    //         count += getCount(tree[right]);
-    //         return count;
-    //     }
-    // }
+    uint32_t getCount(uint32_t node) {
+        if (node == NULL_INDEX) {
+            return 0;
+        } else {
+            return counts[node];
+        }
+    }
 
 
     uint32_t prvAllocate() {
@@ -236,10 +223,10 @@ private:
 
     void prvAdjust(uint32_t r) {
         uint32_t
-            leftCount = GET_COUNT(left[r]),
-            rightCount = GET_COUNT(right[r]),
-            leftHeight = GET_HEIGHT(left[r]),
-            rightHeight = GET_HEIGHT(right[r]);
+            leftCount = getCount(left[r]),
+            rightCount = getCount(right[r]),
+            leftHeight = getHeight(left[r]),
+            rightHeight = getHeight(right[r]);
 
         counts[r] = 1 + leftCount + rightCount;
         heights[r] = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
@@ -290,7 +277,7 @@ private:
                     r = left[r];
                 } else {
                     // reduce two-child case to one-child case
-                    if (GET_HEIGHT(right[r]) > GET_HEIGHT(left[r])) {
+                    if (getHeight(right[r]) > getHeight(left[r])) {
                         uint32_t tmp = right[r];
 
                         while (left[tmp] != NULL_INDEX) {
