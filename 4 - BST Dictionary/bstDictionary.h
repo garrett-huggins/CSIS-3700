@@ -95,7 +95,12 @@ public:
     }
 
     void remove(const KeyType &k) {
-        
+        uint32_t
+            ntbd;
+
+        prvRemove(root,ntbd,k);
+
+        prvFree(ntbd);
     }
 
 // -- private --
@@ -277,8 +282,9 @@ private:
                     r = left[r];
                 } else {
                     // reduce two-child case to one-child case
+                    
                     if (getHeight(right[r]) > getHeight(left[r])) {
-                        uint32_t tmp = right[r];
+                       uint32_t tmp = right[r];
 
                         while (left[tmp] != NULL_INDEX) {
                             tmp = left[tmp];
