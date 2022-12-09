@@ -226,14 +226,8 @@ private:
     }
 
     void prvAdjust(uint32_t r) {
-        uint32_t
-            leftCount = getCount(left[r]),
-            rightCount = getCount(right[r]),
-            leftHeight = getHeight(left[r]),
-            rightHeight = getHeight(right[r]);
-
-        counts[r] = 1 + leftCount + rightCount;
-        heights[r] = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
+        counts[r] = 1 + getCount(left[r]) + getCount(right[r]);
+        heights[r] = 1 + (getHeight(left[r]) > getHeight(right[r]) ? getHeight(left[r]) : getHeight(right[r]));
     }
 
     // recursive insert / update / access
