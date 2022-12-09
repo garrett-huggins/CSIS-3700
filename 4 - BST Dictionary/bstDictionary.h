@@ -95,10 +95,9 @@ public:
     }
 
     void remove(const KeyType &k) {
-        uint32_t
-            ntbd;
+        uint32_t ntbd;
 
-        prvRemove(root,ntbd,k);
+        root = prvRemove(root,ntbd,k);
 
         prvFree(ntbd);
     }
@@ -260,7 +259,7 @@ private:
 
     uint32_t prvRemove(uint32_t r,uint32_t &ntbd,const KeyType &k) {
         if (r == NULL_INDEX) {
-            throw std::domain_error("Remove: key not found");
+            throw std::domain_error("Remove: Key not found");
         }
 
         if (k < keys[r]) {
@@ -290,10 +289,18 @@ private:
                             tmp = left[tmp];
                         }
 
-                        keys[r] = keys[tmp];
-                        values[r] = values[tmp];
                         // swap keys[r] and keys[tmp]
                         // swap values[r] and values[tmp]
+                        
+                        KeyType tmpKey;
+                        tmpKey = keys[tmp];
+                        keys[tmp] = keys[r];
+                        keys[r] = tmpKey;
+
+                        ValueType tmpVal;
+                        tmpVal = values[tmp];
+                        values[tmp] = values[r];
+                        values[r] = tmpVal;
 
                         right[r] = prvRemove(right[r], ntbd, k);
                     } else {
@@ -303,10 +310,18 @@ private:
                             tmp = right[tmp];
                         }
 
-                        keys[r] = keys[tmp];
-                        values[r] = values[tmp];
                         // swap keys[r] and keys[tmp]
                         // swap values[r] and values[tmp]
+
+                        KeyType tmpKey;
+                        tmpKey = keys[tmp];
+                        keys[tmp] = keys[r];
+                        keys[r] = tmpKey;
+
+                        ValueType tmpVal;
+                        tmpVal = values[tmp];
+                        values[tmp] = values[r];
+                        values[r] = tmpVal;
 
                         left[r] = prvRemove(left[r], ntbd, k);
                     }
